@@ -1,0 +1,26 @@
+{
+  "name": "zuora-sdk-bench",
+  "version": "1.0.0",
+  "description": "Benchmarks for Zuora SDK comparing Java and Node.js implementations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bench": "node node/benchmark.js",
+    "bench:all": "npm run bench && cd java && mvn test"
+  },
+  "keywords": [
+    "zuora",
+    "benchmark",
+    "sdk",
+    "java",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "benchmark": "^2.1.4"
+  },
+  "devDependencies": {
+    "axios": "^1.12.0"
+  }
+}

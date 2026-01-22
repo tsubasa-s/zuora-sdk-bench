@@ -1,0 +1,28 @@
+# 環境変数ファイル
+.env
+
+# 結果ディレクトリ
+results/
+
+# Java
+java/target/
+*.class
+*.jar
+*.war
+
+# Node.js
+node/node_modules/
+node/dist/
+node/package-lock.json
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/

@@ -1,0 +1,63 @@
+version: '3.8'
+
+# Zuora SDK Benchmark - Docker Compose
+# JavaとNode.jsで同一のリソース制限を適用し、公平なベンチマークを実行
+
+services:
+  # Java SDK ベンチマーク
+  benchmark-java:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.java
+    container_name: zuora-benchmark-java
+    environment:
+      - ZUORA_CLIENT_ID=${ZUORA_CLIENT_ID}
+      - ZUORA_CLIENT_SECRET=${ZUORA_CLIENT_SECRET}
+      - ZUORA_BASE_URL=${ZUORA_BASE_URL:-https://rest.apisandbox.zuora.com}
+      - ZUORA_BENCHMARK_ENDPOINT=${ZUORA_BENCHMARK_ENDPOINT:-/v1/catalog/products}
+    # リソース制限（公平なベンチマークのため両環境で統一）
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '1'
+          memory: 512M
+    # ネットワーク設定
+    networks:
+      - benchmark-network
+    # 結果出力用ボリューム
+    volumes:
+      - ./results:/app/results
+
+  # Node.js SDK ベンチマーク
+  benchmark-node:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.node
+    container_name: zuora-benchmark-node
+    environment:
+      - ZUORA_CLIENT_ID=${ZUORA_CLIENT_ID}
+      - ZUORA_CLIENT_SECRET=${ZUORA_CLIENT_SECRET}
+      - ZUORA_BASE_URL=${ZUORA_BASE_URL:-https://rest.apisandbox.zuora.com}
+      - ZUORA_BENCHMARK_ENDPOINT=${ZUORA_BENCHMARK_ENDPOINT:-/v1/catalog/products}
+    # リソース制限（公平なベンチマークのため両環境で統一）
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '1'
+          memory: 512M
+    # ネットワーク設定
+    networks:
+      - benchmark-network
+    # 結果出力用ボリューム
+    volumes:
+      - ./results:/app/results
+
+networks:
+  benchmark-network:
+    driver: bridge

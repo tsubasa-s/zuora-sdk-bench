@@ -1,0 +1,39 @@
+# Zuora SDK Benchmark - Node.js
+FROM node:20-slim AS builder
+
+WORKDIR /app
+
+# パッケージファイルをコピー
+COPY node/package.json node/package-lock.json* ./
+
+# 依存関係をインストール
+RUN npm install
+
+# ソースコードをコピー
+COPY node/tsconfig.json ./
+COPY node/src ./src
+
+# ビルド
+RUN npm run build
+
+# ランタイムイメージ
+FROM node:20-slim
+
+WORKDIR /app
+
+# 本番用依存関係のみインストール
+COPY node/package.json node/package-lock.json* ./
+RUN npm install --omit=dev
+
+# ビルド成果物をコピー
+COPY --from=builder /app/dist ./dist
+
+# 環境変数のデフォルト値
+ENV ZUORA_BASE_URL=https://rest.apisandbox.zuora.com
+ENV ZUORA_BENCHMARK_ENDPOINT=/v1/catalog/products
+
+# Node.jsオプション（ベンチマーク用に最適化）
+ENV NODE_OPTIONS="--max-old-space-size=512"
+
+# 実行
+CMD ["node", "dist/index.js"]

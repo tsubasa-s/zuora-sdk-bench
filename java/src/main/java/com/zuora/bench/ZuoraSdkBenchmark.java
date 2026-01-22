@@ -8,9 +8,6 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import okhttp3.*;
-
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,15 +21,10 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 3)
 public class ZuoraSdkBenchmark {
 
-    private OkHttpClient client;
     private Gson gson;
 
     @Setup
     public void setup() {
-        client = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .build();
         gson = new Gson();
     }
 
@@ -64,10 +56,7 @@ public class ZuoraSdkBenchmark {
 
     @TearDown
     public void teardown() {
-        if (client != null) {
-            client.dispatcher().executorService().shutdown();
-            client.connectionPool().evictAll();
-        }
+        // Cleanup if needed
     }
 
     public static void main(String[] args) throws RunnerException {
